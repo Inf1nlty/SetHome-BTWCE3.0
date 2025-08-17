@@ -1,0 +1,46 @@
+package com.inf1nlty.sethome.command;
+
+import com.inf1nlty.sethome.HomePoint;
+import com.inf1nlty.sethome.util.HomeManager;
+import net.minecraft.src.*;
+
+public class SetHomeCommand extends CommandBase {
+    @Override
+    public String getCommandName() {
+        return "sethome";
+    }
+
+    @Override
+    public int getRequiredPermissionLevel() {
+        return 0;
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender) {
+        return "/sethome [name]";
+    }
+
+    @Override
+    public boolean canCommandSenderUseCommand(ICommandSender sender) {
+        return true;
+    }
+
+    @Override
+    public java.util.List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
+        if (!(sender instanceof EntityPlayer player)) return java.util.Collections.emptyList();
+        if (args.length == 1) {
+            java.util.List<HomePoint> homes = HomeManager.getHomes(player);
+            return homes.stream().map(hp -> hp.name).toList();
+        }
+        return java.util.Collections.emptyList();
+    }
+
+    @Override
+    public void processCommand(ICommandSender sender, String[] args) {
+        if (!(sender instanceof EntityPlayer player)) return;
+        String name = args.length >= 1 ? args[0] : "default";
+        HomeManager.setHome(player, name, player.posX, player.posY, player.posZ, player.dimension);
+        player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.home.set.success|name=" + name)
+                .setColor(EnumChatFormatting.GREEN));
+    }
+}

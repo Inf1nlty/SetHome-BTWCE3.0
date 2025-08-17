@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "sethome",
+  "version": "${version}",
+  "name": "Set Home",
+  "description": "Adds home and warp commands: set, delete, list, share, teleport, and player teleport requests.",
+  "authors": [
+    "Inf1nlty"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Inf1nlty/SetHome-BTW-CE-3.X",
+    "sources": "https://github.com/Inf1nlty/SetHome-BTW-CE-3.X/"
+  },
+  "license": "MIT",
+  "icon": "assets/sethome/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+    ],
+    "btw:addon": [
+      "btw.community.sethome.HomeAddon"
+    ]
+  },
+  "custom": {
+    "btw:addon_prefix": "SH"
+  },
+  "mixins": [
+    "sethome.mixins.json"
+  ],
+  "accessWidener" : "sethome.accessWidener",
+  "depends": {
+    "fabricloader": ">=0.14.19",
+    "minecraft": "1.6.4"
+  }
+}
