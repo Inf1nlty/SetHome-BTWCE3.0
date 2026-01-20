@@ -1,5 +1,7 @@
 package com.inf1nlty.sethome.command;
 
+import com.inf1nlty.sethome.util.BackManager;
+import com.inf1nlty.sethome.util.ChatUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.*;
 
@@ -61,7 +63,7 @@ public class TPACommand extends CommandBase {
     public void processCommand(ICommandSender sender, String[] args) {
         if (!(sender instanceof EntityPlayerMP player)) return;
         if (args.length < 1) {
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.usage").setColor(EnumChatFormatting.YELLOW));
+            player.sendChatToPlayer(ChatUtil.trans("commands.t.usage", EnumChatFormatting.YELLOW));
             return;
         }
 
@@ -70,57 +72,59 @@ public class TPACommand extends CommandBase {
         if (arg.equals("yes")) {
             String requesterName = pendingRequests.remove(player.username);
             if (requesterName == null) {
-                player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.norequest").setColor(EnumChatFormatting.RED));
+                player.sendChatToPlayer(ChatUtil.trans("commands.t.norequest", EnumChatFormatting.RED));
                 return;
             }
             EntityPlayerMP requester = getOnlinePlayer(requesterName);
             if (requester == null) {
-                player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.offline|name=" + requesterName).setColor(EnumChatFormatting.RED));
+                player.sendChatToPlayer(ChatUtil.trans("commands.t.offline", EnumChatFormatting.RED, requesterName));
                 return;
             }
             if (player.dimension != requester.dimension) {
-                player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.dim_mismatch|name=" + requesterName).setColor(EnumChatFormatting.RED));
-                requester.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.dim_mismatch|name=" + player.username).setColor(EnumChatFormatting.RED));
+                player.sendChatToPlayer(ChatUtil.trans("commands.t.dim_mismatch", EnumChatFormatting.RED, requesterName));
+                requester.sendChatToPlayer(ChatUtil.trans("commands.t.dim_mismatch", EnumChatFormatting.RED, player.username));
                 return;
             }
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.accepted|name=" + requester.username).setColor(EnumChatFormatting.GREEN));
-            requester.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.accepted_by|name=" + player.username).setColor(EnumChatFormatting.GREEN));
+            player.sendChatToPlayer(ChatUtil.trans("commands.t.accepted", EnumChatFormatting.GREEN, requester.username));
+            requester.sendChatToPlayer(ChatUtil.trans("commands.t.accepted_by", EnumChatFormatting.GREEN, player.username));
+
+            BackManager.setBack(player, player.posX, player.posY, player.posZ, player.dimension);
 
             pendingTeleports.add(new PendingTeleport(requester, player, 100));
-            requester.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.wait|name=" + player.username).setColor(EnumChatFormatting.YELLOW));
+            requester.sendChatToPlayer(ChatUtil.trans("commands.t.wait", EnumChatFormatting.YELLOW, player.username));
             return;
         }
 
         if (arg.equals("no")) {
             String requesterName = pendingRequests.remove(player.username);
             if (requesterName == null) {
-                player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.norequest").setColor(EnumChatFormatting.RED));
+                player.sendChatToPlayer(ChatUtil.trans("commands.t.norequest", EnumChatFormatting.RED));
                 return;
             }
             EntityPlayerMP requester = getOnlinePlayer(requesterName);
             if (requester != null) {
-                requester.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.denied_by|name=" + player.username).setColor(EnumChatFormatting.RED));
+                requester.sendChatToPlayer(ChatUtil.trans("commands.t.denied_by", EnumChatFormatting.RED, player.username));
             }
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.denied|name=" + requesterName).setColor(EnumChatFormatting.RED));
+            player.sendChatToPlayer(ChatUtil.trans("commands.t.denied", EnumChatFormatting.RED, requesterName));
             return;
         }
 
         if (arg.equalsIgnoreCase(player.username)) {
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.self").setColor(EnumChatFormatting.RED));
+            player.sendChatToPlayer(ChatUtil.trans("commands.t.self", EnumChatFormatting.RED));
             return;
         }
         EntityPlayerMP target = getOnlinePlayer(arg);
         if (target == null) {
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.offline|name=" + arg).setColor(EnumChatFormatting.RED));
+            player.sendChatToPlayer(ChatUtil.trans("commands.t.offline", EnumChatFormatting.RED, arg));
             return;
         }
         if (player.dimension != target.dimension) {
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.dim_mismatch|name=" + target.username).setColor(EnumChatFormatting.RED));
+            player.sendChatToPlayer(ChatUtil.trans("commands.t.dim_mismatch", EnumChatFormatting.RED, target.username));
             return;
         }
         pendingRequests.put(target.username, player.username);
-        player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.request_sent|name=" + target.username).setColor(EnumChatFormatting.AQUA));
-        target.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.request|name=" + player.username).setColor(EnumChatFormatting.AQUA));
+        player.sendChatToPlayer(ChatUtil.trans("commands.t.request_sent", EnumChatFormatting.AQUA, target.username));
+        target.sendChatToPlayer(ChatUtil.trans("commands.t.request", EnumChatFormatting.AQUA, player.username));
     }
 
     public static void onServerTick() {
@@ -130,8 +134,8 @@ public class TPACommand extends CommandBase {
             pt.ticksLeft--;
             if (pt.ticksLeft <= 0) {
                 pt.from.setPositionAndUpdate(pt.to.posX, pt.to.posY, pt.to.posZ);
-                pt.from.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.tp_success|name=" + pt.to.username).setColor(EnumChatFormatting.GREEN));
-                pt.to.sendChatToPlayer(ChatMessageComponent.createFromText("commands.t.tp_successed|name=" + pt.from.username).setColor(EnumChatFormatting.GREEN));
+                pt.from.sendChatToPlayer(ChatUtil.trans("commands.t.tp_success", EnumChatFormatting.GREEN, pt.to.username));
+                pt.to.sendChatToPlayer(ChatUtil.trans("commands.t.tp_successed", EnumChatFormatting.GREEN, pt.from.username));
                 it.remove();
             }
         }

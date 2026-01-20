@@ -1,6 +1,8 @@
 package com.inf1nlty.sethome.command;
 
 import com.inf1nlty.sethome.WarpPoint;
+import com.inf1nlty.sethome.util.BackManager;
+import com.inf1nlty.sethome.util.ChatUtil;
 import com.inf1nlty.sethome.util.WarpManager;
 import net.minecraft.src.*;
 
@@ -49,24 +51,22 @@ public class WarpCommand extends CommandBase {
     public void processCommand(ICommandSender sender, String[] args) {
         if (!(sender instanceof EntityPlayer player)) return;
         if (args.length < 1) {
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.warp.usage")
-                    .setColor(EnumChatFormatting.RED));
+            player.sendChatToPlayer(ChatUtil.trans("commands.warp.usage", EnumChatFormatting.RED));
             return;
         }
         String name = args[0];
         WarpPoint wp = WarpManager.getWarp(name);
         if (wp != null) {
             if (wp.dim != player.dimension) {
-                player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.warp.tp.dim_mismatch|name=" + name)
-                        .setColor(EnumChatFormatting.RED));
+                player.sendChatToPlayer(ChatUtil.trans("commands.warp.tp.dim_mismatch", EnumChatFormatting.RED, name));
                 return;
             }
+            BackManager.setBack(player, player.posX, player.posY, player.posZ, player.dimension);
+
             pendingTeleports.put(player.username, new PendingTeleport(player, wp, name, 100));
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.warp.wait|name=" + name)
-                    .setColor(EnumChatFormatting.YELLOW));
+            player.sendChatToPlayer(ChatUtil.trans("commands.warp.wait", EnumChatFormatting.YELLOW, name));
         } else {
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.warp.notfound|name=" + name)
-                    .setColor(EnumChatFormatting.RED));
+            player.sendChatToPlayer(ChatUtil.trans("commands.warp.notfound", EnumChatFormatting.RED, name));
         }
     }
 
@@ -77,8 +77,7 @@ public class WarpCommand extends CommandBase {
             pt.ticksLeft--;
             if (pt.ticksLeft <= 0) {
                 pt.player.setPositionAndUpdate(pt.warp.x, pt.warp.y, pt.warp.z);
-                pt.player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.warp.tp.success|name=" + pt.name)
-                        .setColor(EnumChatFormatting.GREEN));
+                pt.player.sendChatToPlayer(ChatUtil.trans("commands.warp.tp.success", EnumChatFormatting.GREEN, pt.name));
                 it.remove();
             }
         }

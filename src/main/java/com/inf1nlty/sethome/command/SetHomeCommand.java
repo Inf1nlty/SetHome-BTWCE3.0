@@ -1,6 +1,7 @@
 package com.inf1nlty.sethome.command;
 
 import com.inf1nlty.sethome.HomePoint;
+import com.inf1nlty.sethome.util.ChatUtil;
 import com.inf1nlty.sethome.util.HomeManager;
 import net.minecraft.src.*;
 
@@ -40,7 +41,6 @@ public class SetHomeCommand extends CommandBase {
         if (!(sender instanceof EntityPlayer player)) return;
         String name = args.length >= 1 ? args[0] : "default";
         HomeManager.setHome(player, name, player.posX, player.posY, player.posZ, player.dimension);
-        player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.home.set.success|name=" + name)
-                .setColor(EnumChatFormatting.GREEN));
+        player.sendChatToPlayer(ChatUtil.trans("commands.home.set.success", EnumChatFormatting.GREEN, name));
     }
 }

@@ -9,7 +9,6 @@
     "MinecraftServerMixin"
   ],
   "client": [
-    "GuiNewChatMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,5 +1,6 @@
 package com.inf1nlty.sethome.command;
 
+import com.inf1nlty.sethome.util.ChatUtil;
 import com.inf1nlty.sethome.util.HomeManager;
 import com.inf1nlty.sethome.HomePoint;
 import net.minecraft.src.*;
@@ -33,14 +34,12 @@ public class ListHomeCommand extends CommandBase {
         if (!(sender instanceof EntityPlayer player)) return;
         List<HomePoint> list = HomeManager.getHomes(player);
         if (list.isEmpty()) {
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.home.list.empty")
-                    .setColor(EnumChatFormatting.RED));
+            player.sendChatToPlayer(ChatUtil.trans("commands.home.list.empty", EnumChatFormatting.RED));
         } else {
             String names = list.stream()
                     .map(hp -> String.format("%s (%.1f, %.1f, %.1f, {dim=%d})", hp.name, hp.x, hp.y, hp.z, hp.dim))
                     .collect(Collectors.joining(", "));
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.home.list.success|list=" + names)
-                    .setColor(EnumChatFormatting.GREEN));
+            player.sendChatToPlayer(ChatUtil.trans("commands.home.list.success", EnumChatFormatting.GREEN, names));
         }
     }
 }

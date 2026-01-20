@@ -1,6 +1,8 @@
 package com.inf1nlty.sethome.command;
 
 import com.inf1nlty.sethome.HomePoint;
+import com.inf1nlty.sethome.util.BackManager;
+import com.inf1nlty.sethome.util.ChatUtil;
 import com.inf1nlty.sethome.util.HomeManager;
 import net.minecraft.src.*;
 
@@ -52,16 +54,15 @@ public class HomeCommand extends CommandBase {
         HomePoint hp = HomeManager.getHome(player, name);
         if (hp != null) {
             if (hp.dim != player.dimension) {
-                player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.home.tp.dim_mismatch|name=" + name)
-                        .setColor(EnumChatFormatting.RED));
+                player.sendChatToPlayer(ChatUtil.trans("commands.home.tp.dim_mismatch", EnumChatFormatting.RED, name));
                 return;
             }
+            BackManager.setBack(player, player.posX, player.posY, player.posZ, player.dimension);
+
             pendingTeleports.put(player.username, new PendingTeleport(player, hp, name, 100));
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.home.wait|name=" + name)
-                    .setColor(EnumChatFormatting.YELLOW));
+            player.sendChatToPlayer(ChatUtil.trans("commands.home.wait", EnumChatFormatting.YELLOW, name));
         } else {
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.home.notfound|name=" + name)
-                    .setColor(EnumChatFormatting.RED));
+            player.sendChatToPlayer(ChatUtil.trans("commands.home.notfound", EnumChatFormatting.RED, name));
         }
     }
 
@@ -72,8 +73,7 @@ public class HomeCommand extends CommandBase {
             pt.ticksLeft--;
             if (pt.ticksLeft <= 0) {
                 pt.player.setPositionAndUpdate(pt.home.x, pt.home.y, pt.home.z);
-                pt.player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.home.tp.success|name=" + pt.name)
-                        .setColor(EnumChatFormatting.GREEN));
+                pt.player.sendChatToPlayer(ChatUtil.trans("commands.home.tp.success", EnumChatFormatting.GREEN, pt.name));
                 it.remove();
             }
         }

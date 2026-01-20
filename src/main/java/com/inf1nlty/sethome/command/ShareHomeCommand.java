@@ -1,6 +1,7 @@
 package com.inf1nlty.sethome.command;
 
 import com.inf1nlty.sethome.HomePoint;
+import com.inf1nlty.sethome.util.ChatUtil;
 import com.inf1nlty.sethome.util.HomeManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.*;
@@ -43,30 +44,14 @@ public class ShareHomeCommand extends CommandBase {
         String name = args.length < 1 ? "default" : args[0];
         HomePoint hp = HomeManager.getHome(player, name);
         if (hp == null) {
-            player.sendChatToPlayer(
-                    ChatMessageComponent.createFromText("commands.home.notfound|name=" + name)
-                            .setColor(EnumChatFormatting.RED)
-            );
+            player.sendChatToPlayer(ChatUtil.trans("commands.home.notfound", EnumChatFormatting.RED, name));
             return;
         }
 
-        String line1 = String.format(
-                "commands.sharehome.share.line1|player=%s|name=%s", player.username, name
-        );
-        String line2 = String.format(
-                "commands.sharehome.share.line2|x=%.3f|y=%.3f|z=%.3f|dim=%d", hp.x, hp.y, hp.z, hp.dim
-        );
-
         for (Object obj : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
             EntityPlayerMP target = (EntityPlayerMP) obj;
-            target.sendChatToPlayer(
-                    ChatMessageComponent.createFromText(line1)
-                            .setColor(EnumChatFormatting.AQUA)
-            );
-            target.sendChatToPlayer(
-                    ChatMessageComponent.createFromText(line2)
-                            .setColor(EnumChatFormatting.AQUA)
-            );
+            target.sendChatToPlayer(ChatUtil.trans("commands.sharehome.share.line1", EnumChatFormatting.AQUA, player.username, name));
+            target.sendChatToPlayer(ChatUtil.trans("commands.sharehome.share.line2", EnumChatFormatting.AQUA, String.format("%.3f", hp.x), String.format("%.3f", hp.y), String.format("%.3f", hp.z), Integer.toString(hp.dim)));
         }
     }
 }

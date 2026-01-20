@@ -1,5 +1,6 @@
 package com.inf1nlty.sethome.command;
 
+import com.inf1nlty.sethome.util.ChatUtil;
 import com.inf1nlty.sethome.util.WarpManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.*;
@@ -29,23 +30,19 @@ public class DelWarpCommand extends CommandBase {
     public void processCommand(ICommandSender sender, String[] args) {
         if (!(sender instanceof EntityPlayer player)) return;
         if (args.length < 1) {
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.delwarp.usage")
-                    .setColor(EnumChatFormatting.RED));
+            player.sendChatToPlayer(ChatUtil.trans("commands.delwarp.usage", EnumChatFormatting.RED));
             return;
         }
         String name = args[0];
         boolean ok = WarpManager.delWarp(name);
 
         if (ok) {
-            String broadcastMsg = String.format("commands.warp.delete.broadcast|player=%s|name=%s", player.username, name);
             for (Object obj : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
                 EntityPlayer target = (EntityPlayer) obj;
-                target.sendChatToPlayer(ChatMessageComponent.createFromText(broadcastMsg)
-                        .setColor(EnumChatFormatting.AQUA));
+                target.sendChatToPlayer(ChatUtil.trans("commands.warp.delete.broadcast", EnumChatFormatting.AQUA, player.username, name));
             }
         } else {
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.warp.notfound|name=" + name)
-                    .setColor(EnumChatFormatting.RED));
+            player.sendChatToPlayer(ChatUtil.trans("commands.warp.notfound", EnumChatFormatting.RED, name));
         }
     }
 }

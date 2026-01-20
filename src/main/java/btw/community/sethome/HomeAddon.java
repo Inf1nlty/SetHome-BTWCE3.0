@@ -1,7 +1,7 @@
 package btw.community.sethome;
 
-import btw.BTWAddon;
-import btw.AddonHandler;
+import api.AddonHandler;
+import api.BTWAddon;
 import com.inf1nlty.sethome.command.*;
 
 public class HomeAddon extends BTWAddon {
@@ -21,5 +21,6 @@ public class HomeAddon extends BTWAddon {
         AddonHandler.registerCommand(new DelWarpCommand(), false);
 
         AddonHandler.registerCommand(new TPACommand(), false);
+        AddonHandler.registerCommand(new BackCommand(), false);
     }
 }

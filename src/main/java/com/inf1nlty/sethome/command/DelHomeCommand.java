@@ -1,6 +1,7 @@
 package com.inf1nlty.sethome.command;
 
 import com.inf1nlty.sethome.HomePoint;
+import com.inf1nlty.sethome.util.ChatUtil;
 import com.inf1nlty.sethome.util.HomeManager;
 import net.minecraft.src.*;
 
@@ -41,11 +42,11 @@ public class DelHomeCommand extends CommandBase {
         String name = args.length >= 1 ? args[0] : "default";
         boolean ok = HomeManager.delHome(player, name);
         if (ok) {
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.home.delete.success|name=" + name)
-                    .setColor(EnumChatFormatting.GREEN));
+            ChatMessageComponent msg = ChatUtil.trans("commands.home.delete.success", EnumChatFormatting.GREEN, name);
+            player.sendChatToPlayer(msg);
         } else {
-            player.sendChatToPlayer(ChatMessageComponent.createFromText("commands.home.notfound|name=" + name)
-                    .setColor(EnumChatFormatting.RED));
+            ChatMessageComponent msg = ChatUtil.trans("commands.home.notfound", EnumChatFormatting.RED, name);
+            player.sendChatToPlayer(msg);
         }
     }
 }

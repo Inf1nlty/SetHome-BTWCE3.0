@@ -1,6 +1,7 @@
 package com.inf1nlty.sethome.command;
 
 import com.inf1nlty.sethome.WarpPoint;
+import com.inf1nlty.sethome.util.ChatUtil;
 import com.inf1nlty.sethome.util.WarpManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.*;
@@ -45,40 +46,21 @@ public class ShareWarpCommand extends CommandBase {
         if (!(sender instanceof EntityPlayerMP player)) return;
 
         if (args.length < 1) {
-            player.sendChatToPlayer(
-                    ChatMessageComponent.createFromText("commands.sharewarp.usage")
-                            .setColor(EnumChatFormatting.RED)
-            );
+            player.sendChatToPlayer(ChatUtil.trans("commands.sharewarp.usage", EnumChatFormatting.RED));
             return;
         }
 
         String name = args[0];
         WarpPoint wp = WarpManager.getWarp(name);
         if (wp == null) {
-            player.sendChatToPlayer(
-                    ChatMessageComponent.createFromText("commands.warp.notfound|name=" + name)
-                            .setColor(EnumChatFormatting.RED)
-            );
+            player.sendChatToPlayer(ChatUtil.trans("commands.warp.notfound", EnumChatFormatting.RED, name));
             return;
         }
 
-        String line1 = String.format(
-                "commands.sharewarp.share.line1|player=%s|name=%s", player.username, name
-        );
-        String line2 = String.format(
-                "commands.sharewarp.share.line2|x=%.3f|y=%.3f|z=%.3f|dim=%d", wp.x, wp.y, wp.z, wp.dim
-        );
-
         for (Object obj : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
             EntityPlayerMP target = (EntityPlayerMP) obj;
-            target.sendChatToPlayer(
-                    ChatMessageComponent.createFromText(line1)
-                            .setColor(EnumChatFormatting.AQUA)
-            );
-            target.sendChatToPlayer(
-                    ChatMessageComponent.createFromText(line2)
-                            .setColor(EnumChatFormatting.AQUA)
-            );
+            target.sendChatToPlayer(ChatUtil.trans("commands.sharewarp.share.line1", EnumChatFormatting.AQUA, player.username, name));
+            target.sendChatToPlayer(ChatUtil.trans("commands.sharewarp.share.line2", EnumChatFormatting.AQUA, String.format("%.3f", wp.x), String.format("%.3f", wp.y), String.format("%.3f", wp.z), Integer.toString(wp.dim)));
         }
     }
 }

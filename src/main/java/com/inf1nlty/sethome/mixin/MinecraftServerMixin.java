@@ -1,5 +1,6 @@
 package com.inf1nlty.sethome.mixin;
 
+import com.inf1nlty.sethome.command.BackCommand;
 import com.inf1nlty.sethome.command.HomeCommand;
 import com.inf1nlty.sethome.command.TPACommand;
 import com.inf1nlty.sethome.command.WarpCommand;
@@ -16,5 +17,6 @@ public class MinecraftServerMixin {
         HomeCommand.onServerTick();
         WarpCommand.onServerTick();
         TPACommand.onServerTick();
+        BackCommand.onServerTick();
     }
 }
